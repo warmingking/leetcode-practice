@@ -8,20 +8,21 @@
 class Solution {
 public:
     bool find132pattern(vector<int>& nums) {
-        map<int, int> patten13;
-        for (int i = 0; i < nums.size(); ++i) {
-            if (patten13.count(nums[i]) == 0) {
-                patten13[nums[i]] = INT_MIN;
+        int min = nums[0];
+        map<int, int> pattern13;
+        for (int i = 1; i < nums.size(); ++i) {
+            if (nums[i] <= min) {
+                min = nums[i];
             } else {
-                patten13[nums[i]] = max(nums[i], patten13[nums[i]]);
-            }
-            for (auto p : patten13) {
-                if (p.first >= nums[i]) {
-                    break;
+                for (auto& p : pattern13) {
+                    if (p.first >= nums[i]) {
+                        break;
+                    }
+                    if (p.second > nums[i]) {
+                        return true;
+                    }
                 }
-                if (p.first < nums[i] && nums[i] < p.second) {
-                    return true;
-                }
+                pattern13[min] = nums[i];
             }
         }
         return false;
