@@ -8,23 +8,24 @@
 class Solution {
 public:
     bool find132pattern(vector<int>& nums) {
-        stack<int> num_3s;
-        int num_2 = INT_MIN;
-        num_3s.push(nums.back());
-        for (int i = nums.size()-2; i >= 0; --i) {
-            if (nums[i] < num_2) {
-                return true;
-            }
-            while (!num_3s.empty() && num_3s.top() < nums[i]) {
-                num_2 = num_3s.top();
-                num_3s.pop();
-            }
-            if (nums[i] > num_2) {
-                num_3s.push(nums[i]);
+        int min = nums[0];
+        map<int, int> pattern13;
+        for (int i = 1; i < nums.size(); ++i) {
+            if (nums[i] <= min) {
+                min = nums[i];
+            } else {
+                for (auto& p : pattern13) {
+                    if (p.first >= nums[i]) {
+                        break;
+                    }
+                    if (p.second > nums[i]) {
+                        return true;
+                    }
+                }
+                pattern13[min] = nums[i];
             }
         }
         return false;
     }
 };
 // @lc code=end
-

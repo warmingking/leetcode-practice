@@ -8,23 +8,17 @@
 class Solution {
 public:
     vector<int> dailyTemperatures(vector<int>& temperatures) {
-        auto len = temperatures.size();
-        if (len == 0) {
+        if (temperatures.empty()) {
             return {};
         }
-
-        multiset<pair<int, int>> temps;
-        temps.emplace(temperatures[len-1], len-1);
-
-        vector<int> ans(len, 0);
-        for (int i = len-2; i >= 0; --i) {
-            int cnt = 1;
-            for (auto& p : temps) {
-                if (p.first > temperatures[i]) {
-                    ans[i] = cnt;
-                    break;
-                }
-                cnt++;
+        vector<int> ans(temperatures.size(), 0);
+        stack<pair<int,int>> temps;
+        temps.emplace(temperatures[0], 0);
+        for (int i = 1; i < temperatures.size(); ++i) {
+            while (!temps.empty() && temps.top().first < temperatures[i]) {
+                auto& p = temps.top();
+                ans[p.second] = i - p.second;
+                temps.pop();
             }
             temps.emplace(temperatures[i], i);
         }
@@ -32,4 +26,3 @@ public:
     }
 };
 // @lc code=end
-
