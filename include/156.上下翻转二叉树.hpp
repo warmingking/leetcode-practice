@@ -11,23 +11,49 @@ public:
         TreeNode n1(1, &n2, &n3);
 
         TreeNode* node = upsideDownBinaryTree(&n1);
-        cout << "succ " << node->val << " succ" << endl;
+
+        queue<TreeNode*> q;
+        q.push(node);
+        while (true) {
+            bool end = true;
+            int s = q.size();
+            while (s--) {
+                TreeNode* cur = q.front();
+                if (cur != nullptr) {
+                    cout << cur->val << " ";
+                    q.push(cur->left);
+                    if (cur->left != nullptr) {
+                        end = false;
+                    }
+                    q.push(cur->right);
+                    if (cur->right != nullptr) {
+                        end = false;
+                    }
+                } else {
+                    cout << "nullptr ";
+                    q.push(nullptr);
+                    q.push(nullptr);
+                }
+                q.pop();
+            }
+            if (end) {
+                cout << endl;
+                break;
+            }
+        }
     }
 
     TreeNode* upsideDownBinaryTree(TreeNode* root) {
-        function<TreeNode*(TreeNode*)> f = [f](TreeNode* node) {
-            if (node == nullptr || node->left == nullptr) {
-                return node;
-            }
-            TreeNode* l = node->left;
-            TreeNode* r = node->right;
-            TreeNode* ll = f(l);
-            TreeNode* rr = f(r);
-            ll->left = rr;
-            ll->right = node;
-            return ll;
-        };
+        TreeNode *right = nullptr, *father = nullptr;
+        while (root != nullptr) {
+            TreeNode* left = root->left;
+            root->left = right;
+            right = root->right;
+            root->right = father;
+            father = root;
+            root = left;
+        }
 
-        return f(root);
+        return father;
     }
 };
